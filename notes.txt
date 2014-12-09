@@ -1,0 +1,83 @@
+I used the Python interface for OpenCV[1] . I modified a lot as I was going, this is just how the code ended up. The sigmoid function was added when I attempted to have the threshold change over the image, but I couldn't get it to work out very well :/
+first code used:
+
+import numpy as np
+import cv2
+import math
+
+imgname = 'filename.jpg'
+img = cv2.imread(imgname,-1)
+
+cv2.namedWindow('original',cv2.WINDOW_NORMAL)
+cv2.imshow('original',img)
+
+
+def sigmoid(x):
+  return 1/(1+math.exp(-x))
+
+s = img.shape
+print s
+for i in range(0,s[0]-1):
+    for j in range(0,s[1]-1):
+      if np.linalg.norm(img[i,j]-img[i+1,j+1]) < 19:
+        img[i+1,j+1] = img[i,j]
+
+cv2.namedWindow('1st',cv2.WINDOW_NORMAL)
+cv2.imshow('1st',img) 
+
+cv2.imshow('unscaled',img)
+
+k = cv2.waitKey(0)
+if k == 27:
+  cv2.destroyAllWindows()
+elif k == ord('s'):
+  cv2.imwrite('sorted'+imgname,img)
+  cv2.destroyAllWindows()
+modified to check individual RGB values:
+import cv2
+
+imgname = 'filename.jpg'
+img = cv2.imread(imgname,1)
+
+cv2.namedWindow('original',cv2.WINDOW_NORMAL)
+cv2.imshow('original',img)
+
+
+def sigmoid(x):
+  return 1/(1+math.exp(-x))
+
+s = img.shape
+print s
+for i in range(s[0]-1,0,-1):
+    for j in range(s[1]-1,0,-1):
+      if img[i,j,0]-img[i-1,j-1,0] < 50:
+        img[i-1,j-1,0] = img[i,j,0]
+      if img[i,j,1]-img[i-1,j-1,1] < 40:
+        img[i-1,j-1,1] = img[i,j,1]
+      if img[i,j,2]-img[i-1,j-1,2] < 90:
+        img[i-1,j-1,2] = img[i,j,2]    
+
+cv2.namedWindow('1st',cv2.WINDOW_NORMAL)
+cv2.imshow('1st',img)
+
+for i in range(s[0]-1,0,-1):
+    for j in range(0,s[1]-2):
+      if img[i,j,0]-img[i,j+1,0] < 50:
+        img[i,j+1,0] = img[i,j,0]
+      if img[i,j,1]-img[i,j+1,1] < 40:
+        img[i,j+1,1] = img[i,j,1]
+      if img[i,j,2]-img[i,j+1,2] < 80:
+        img[i,j+1,2] = img[i,j,2]
+
+
+
+cv2.namedWindow('2nd',cv2.WINDOW_NORMAL)
+cv2.imshow('2nd',img)
+
+cv2.imshow('unscaled',img)
+k = cv2.waitKey(0)
+if k == 27:
+  cv2.destroyAllWindows()
+elif k == ord('s'):
+  cv2.imwrite('channelsorted'+imgname,img)
+  cv2.destroyAllWindows()

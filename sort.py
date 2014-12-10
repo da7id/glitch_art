@@ -51,11 +51,11 @@ def sortColumn():
         sort_length = y_end - y
         
         for i in range (0, sort_length):
+            print type(unsorted_pixels)
             unsorted_pixels = numpy.concatenate((unsorted_pixels, img[y+i][x]))
 
         unsorted_pixels.sort()
         sorted_pixels = unsorted_pixels
-        print sorted_pixels
 
         for i in range(0, sort_length):
             # POTENTIALLY WRONG

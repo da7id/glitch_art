@@ -1,16 +1,15 @@
 import numpy
 import cv2
 
-image_to_edit = 'test_line.png'
-save_name = 'test.png'
-black_value = 150;
+image_to_edit = '5.jpg'
+save_name = '5_edit.jpg'
+black_value = 100;
 
 img = cv2.imread(image_to_edit)
 height = img.shape[0]
 width = img.shape[1]
 row = 0
 column = 0
-unsorted_pixels = numpy.array([])
 
 def sortByRow(img):
     return numpy.sort(img, axis=1)
@@ -32,7 +31,7 @@ def blotDarkPixels(img):
     for row in range(0, img.shape[0]):
         for column in range(0, img.shape[1]):
             pixel = img[row][column]
-            if get_luminance(pixel) < 150:
+            if getLuminance(pixel) < 150:
                 img[row][column] = [0, 0, 0]
     return img
 
@@ -40,6 +39,7 @@ def sortColumn():
     x = column
     y = 0
     y_end = 0
+    unsorted_pixels = numpy.array([0,0,0])
 
     while y_end < height-1:
         y = getFirstNonBlackY(x, y)
@@ -51,10 +51,11 @@ def sortColumn():
         sort_length = y_end - y
         
         for i in range (0, sort_length):
-            print type(unsorted_pixels)
-            unsorted_pixels = numpy.concatenate((unsorted_pixels, img[y+i][x]))
+            unsorted_pixels = numpy.vstack((unsorted_pixels, img[y+i][x]))
 
-        unsorted_pixels.sort()
+        #print unsorted_pixels
+        #unsorted_pixels.sort()
+        numpy.sort(unsorted_pixels)
         sorted_pixels = unsorted_pixels
 
         for i in range(0, sort_length):
@@ -62,6 +63,7 @@ def sortColumn():
             img[y+i][x] = sorted_pixels[i]
 
         y = y_end + 1
+    #print sorted_pixels.shape
 
 
 
@@ -85,8 +87,8 @@ def getNextBlackY(_x, _y):
                 return height-1
     return y-1
 
-
 while column <= width-1:
+#while column <= 0:
     sortColumn()
     column += 1
 
